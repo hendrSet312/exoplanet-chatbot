@@ -1,0 +1,13 @@
+joblib==1.4.0
+langchain==0.3.19
+langchain_community==0.3.18
+langchain_core==0.3.37
+langchain_groq==0.2.4
+matplotlib==3.8.4
+pandas==2.2.3
+regex==2024.9.11
+sentence_transformers==3.3.1
+shap==0.46.0
+streamlit==1.42.0
+xgboost==2.1.4
+streamlit==1.33.0
