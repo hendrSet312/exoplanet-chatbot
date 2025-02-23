@@ -11,6 +11,7 @@ from sentence_transformers import SentenceTransformer
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import LLMChainExtractor
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
 class SentenceTransformerEmbeddings:
@@ -27,12 +28,13 @@ class SentenceTransformerEmbeddings:
     def embed_query(self, texts):
         return self.embeddings.encode(texts, normalize_embeddings=True).tolist()
 
+
 class chatbot:
     def __init__(self,apikey:str):
         self.__apikey = apikey
         self.__temperature = 0.5
         self.__max_completion_tokens = 4096
-        self.__model = "llama-3.1-8b-instant"
+        self.__model = "llama-3.3-70b-specdec"
         self.__embeddings = SentenceTransformerEmbeddings()
         self.__client =ChatGroq(
             groq_api_key= self.__apikey,  # Replace with your actual API key
@@ -167,6 +169,10 @@ class ShapInterpreter:
             - Tawarkan wawasan dan analisis tingkat lanjut sesuai dengan konteks profesional.
 
         Output Analisis (3 bagian):
+        1. Informasi planet :
+            - Analisis isi input data yang terdiri dari P_NAME,P_DETECTION,P_DISCOVERY_FACILITY,P_YEAR
+            - Jika variabel tersebut tidak ada maka abaikan dan jangan tampilkan informasi planet  
+            - Jika ada, maka jelaskan informasi planet seperti nama planet, kapan di deteksi, ditemukan di fasilitas mana, dideteksi menggunakan apa dan ditemukan pada tahun berapa
 		1. Makna Prediksi: Berikan penjelasan yang jelas mengenai arti kategori prediksi kelayakhunian. Misalnya, jika model memprediksi "layak huni secara optimis," jelaskan dengan ringkas apa maksudnya.
 		2. Identifikasi Fitur Utama: Temukan dan analisis empat fitur teratas yang paling berpengaruh terhadap prediksi model. Sertakan:
 			- Jelaskan:
@@ -189,6 +195,7 @@ class ShapInterpreter:
 
         user_message = HumanMessagePromptTemplate.from_template(
             f"""
+                    Input model = { result['input'].to_string(index=False)}
                     Nilai prediksi input : {result['number']} ({result['label']}) (persentase probabilitas : {result['probability']})
                     Dictionary fitur : {result['description']} 
                     Nada dan pengetahuan pengguna : {tone}

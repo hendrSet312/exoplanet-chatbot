@@ -10,4 +10,4 @@ sentence_transformers==3.3.1
 shap==0.46.0
 streamlit==1.42.0
 xgboost==2.1.4
-streamlit==1.33.0
+faiss-cpu==1.10.0

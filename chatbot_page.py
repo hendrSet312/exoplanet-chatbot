@@ -5,11 +5,10 @@ from backend.groq import *
 st.set_page_config(layout="wide")
 
 def update_conversation(role, content, input_context=None, output_context=None):
-    # Append to the session message list
     st.session_state.messages.append({"role": role, "content": content})
 
 def process_chat(user_input):
-    with st.spinner("Thinking..."):
+    with st.spinner("Berpikir..."):
         chat_history = [('human' if msg['role'] == "human" else 'ai', msg['content']) for msg in st.session_state.messages]
 
         retrieved_document = st.session_state.Retriever['history_aware'].invoke({
@@ -48,25 +47,26 @@ with st.expander('🛠️ Pengaturan'):
 
 
 with st.container():
-    if len(st.session_state.prediction) > 0 : 
+    if st.session_state.prediction != None : 
         cols1, cols2 = st.columns(2)
         with cols1 :
-            st.subheader('Shap Explanation')
-            if st.session_state.ShapResult == None and st.session_state.ShapInterpreter: 
-                interpret_result = st.session_state.ShapInterpreter.generate_insight(st.session_state['prediction'],st.session_state['tone'])
-                st.session_state.ShapResult = interpret_result
+            st.subheader('📊 SHAP Graph Explanation')
+            with st.spinner('Menghasilkan penjelasan...'):
+                if st.session_state.ShapResult == None and st.session_state.ShapInterpreter: 
+                    interpret_result = st.session_state.ShapInterpreter.generate_insight(st.session_state['prediction'],st.session_state['tone'])
+                    st.session_state.ShapResult = interpret_result
 
-            if st.session_state.ShapResult : 
-                with st.container(height = 400):
-                    st.image(st.session_state.prediction['image'])
-                    st.write(st.session_state.ShapResult)
+                if st.session_state.ShapResult : 
+                    with st.container(height = 400):
+                        st.image(st.session_state.prediction['image'])
+                        st.write(st.session_state.ShapResult)
 
 
         with cols2  : 
-            st.subheader('Chatbot')
+            st.subheader('🤖 Chatbot Assistant')
             with st.container():
-                if len(st.session_state.api_key.strip()) < 1:
-                    st.error('Tolong atur API key terlebih dahulu lewat pengaturan')
+                if len(st.session_state.api_key.strip()) < 1 and len(st.session_state.tone.strip()) < 1:
+                    st.error('Tolong atur API key dan gaya bicara yang ada inginkan terlebih dahulu lewat pengaturan')
                 else : 
 
                     st.session_state.Retriever['base']  = st.session_state.Chatbot.create_retrieval(
