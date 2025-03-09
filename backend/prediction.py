@@ -3,6 +3,7 @@ import joblib
 import xgboost
 import matplotlib.pyplot as plt
 import shap
+import os
 import json
 
 class modelling:
@@ -31,6 +32,13 @@ class modelling:
         return x_cat
     
     def shap_explainer(self, prediction_data, result : int):
+
+        folder_name = "media/image/planets"
+
+        # Create the folder if it doesn't exist
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+
         explainer = shap.TreeExplainer(self.__xgboost)
         shap_values = explainer(prediction_data)
 

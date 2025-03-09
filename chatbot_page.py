@@ -2,6 +2,18 @@ import streamlit as st
 from langchain.schema import HumanMessage,BaseMessage,AIMessage
 from backend.groq import *
 
+def check_required_input(api_key, tone):
+    error_msg = 'Tolong atur API key dan gaya bicara yang Anda inginkan terlebih dahulu lewat pengaturan'
+    if isinstance(api_key, str) and isinstance(tone, str):
+        if len(api_key.strip()) < 1 or len(tone.strip()) < 1:
+            st.error(error_msg)
+            return False
+    else:
+        st.error(error_msg)
+        return False
+    
+    return True  
+
 st.set_page_config(layout="wide")
 
 def update_conversation(role, content, input_context=None, output_context=None):
@@ -37,38 +49,34 @@ with st.expander('🛠️ Pengaturan'):
     tone = st.pills('🗣️ Gaya bahasa',
                     ['Normal','Teknikal'], 
                     help = 'Normal : untuk umum atau belum teralu paham astronomi dan sains \n\n Teknikal : untuk orang ahli di astronomi, mahasiswa, peneliti atau astronot')
-
     if st.button("Simpan"):
         st.session_state.api_key = api_key
         st.session_state.tone = tone
-        st.session_state.ShapInterpreter = ShapInterpreter(st.session_state['api_key'])
-        st.session_state.Chatbot = chatbot(st.session_state['api_key'])
+            
 
 
 
 with st.container():
-    if st.session_state.prediction != None : 
-        cols1, cols2 = st.columns(2)
-        with cols1 :
-            st.subheader('📊 SHAP Graph Explanation')
-            with st.spinner('Menghasilkan penjelasan...'):
-                if st.session_state.ShapResult == None and st.session_state.ShapInterpreter: 
-                    interpret_result = st.session_state.ShapInterpreter.generate_insight(st.session_state['prediction'],st.session_state['tone'])
-                    st.session_state.ShapResult = interpret_result
+    if st.session_state.prediction != None:
+        if check_required_input(st.session_state.api_key,st.session_state.tone) : 
+            st.session_state.ShapInterpreter = ShapInterpreter(st.session_state['api_key'])
+            st.session_state.Chatbot = chatbot(st.session_state['api_key'])
+            cols1, cols2 = st.columns(2)
+            with cols1 :
+                st.subheader('📊 SHAP Graph Explanation')
+                with st.spinner('Menghasilkan penjelasan...'):
+                    if st.session_state.ShapResult == None and st.session_state.ShapInterpreter: 
+                        interpret_result = st.session_state.ShapInterpreter.generate_insight(st.session_state['prediction'],st.session_state['tone'])
+                        st.session_state.ShapResult = interpret_result
+                    if st.session_state.ShapResult : 
+                        with st.container(height = 400):
+                            st.image(st.session_state.prediction['image'])
+                            st.write(st.session_state.ShapResult)
 
-                if st.session_state.ShapResult : 
-                    with st.container(height = 400):
-                        st.image(st.session_state.prediction['image'])
-                        st.write(st.session_state.ShapResult)
 
-
-        with cols2  : 
-            st.subheader('🤖 Chatbot Assistant')
-            with st.container():
-                if len(st.session_state.api_key.strip()) < 1 and (st.session_state.tone == None):
-                    st.error('Tolong atur API key dan gaya bicara yang ada inginkan terlebih dahulu lewat pengaturan')
-                else : 
-
+            with cols2  : 
+                st.subheader('🤖 Chatbot Assistant')
+                with st.container():
                     st.session_state.Retriever['base']  = st.session_state.Chatbot.create_retrieval(
                             st.session_state.prediction,
                             st.session_state.ShapResult
