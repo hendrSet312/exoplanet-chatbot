@@ -65,7 +65,7 @@ with st.container():
         with cols2  : 
             st.subheader('🤖 Chatbot Assistant')
             with st.container():
-                if len(st.session_state.api_key.strip()) < 1 and len(st.session_state.tone.strip()) < 1:
+                if len(st.session_state.api_key.strip()) < 1 and (st.session_state.tone == None):
                     st.error('Tolong atur API key dan gaya bicara yang ada inginkan terlebih dahulu lewat pengaturan')
                 else : 
 

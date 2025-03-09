@@ -104,7 +104,7 @@ class chatbot:
                                 - Jelaskan konsep dengan cara yang mudah dipahami.
                                 - Berikan panduan langkah demi langkah jika diperlukan.
 
-                            2. Expert  (Peneliti, Profesional, Astronaut):
+                            2. Teknnikal  (Peneliti, Profesional, Astronaut):
                                 - Gunakan terminologi teknis yang tepat dan berikan penjelasan mendalam.
                                 - Rujuk pada konsep akademis dan standar industri.
                                 - Tawarkan wawasan dan analisis tingkat lanjut sesuai dengan konteks profesional.
@@ -163,7 +163,7 @@ class ShapInterpreter:
             - Jelaskan konsep dengan cara yang mudah dipahami.
             - Berikan panduan langkah demi langkah jika diperlukan.
 
-        2. Expert  (Peneliti, Profesional, Astronaut):
+        2. Teknikal  (Peneliti, Profesional, Astronaut):
             - Gunakan terminologi teknis yang tepat dan berikan penjelasan mendalam.
             - Rujuk pada konsep akademis dan standar industri.
             - Tawarkan wawasan dan analisis tingkat lanjut sesuai dengan konteks profesional.
